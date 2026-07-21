@@ -1,5 +1,6 @@
 from database import Database
 
+
 def test_add_student():
     db = Database()
 

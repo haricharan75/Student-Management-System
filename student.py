@@ -5,8 +5,4 @@ class Student:
         self.age = age
 
     def display(self):
-        return (
-            f"ID: {self.student_id}, "
-            f"Name: {self.name}, "
-            f"Age: {self.age}"
-        )
+        return f"ID: {self.student_id}, " f"Name: {self.name}, " f"Age: {self.age}"
