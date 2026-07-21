@@ -52,11 +52,11 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          pytest -v
+          PYTHONPATH=. pytest -v
 
       - name: Validate Coverage
         run: |
-          pytest --cov=. --cov-report=term-missing --cov-fail-under=90
+          PYTHONPATH=. pytest --cov=. --cov-report=term-missing --cov-fail-under=90
 
   gate3-security:
     name: Gate 3 - Security Gate
