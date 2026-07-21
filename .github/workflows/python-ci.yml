@@ -30,6 +30,9 @@ jobs:
       - name: Check Code Formatting
         run: black --check .
 
+      - name: Run Pylint
+        run: pylint app.py student.py database.py
+
       - name: Run Tests
         run: python -m pytest -v
 
