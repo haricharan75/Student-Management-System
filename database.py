@@ -19,7 +19,7 @@ class StudentDatabase:
 
     def find_student_by_id(self, student_id):
         for student in self.students:
-            if student.student_id==student_id:
+            if student.student_id == student_id:
                 return student
         return None
 
