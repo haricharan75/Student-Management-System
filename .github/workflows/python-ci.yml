@@ -1,16 +1,15 @@
-name: Python CI
+name: Quality Gates Pipeline
 
 on:
   push:
     branches:
-      - main
-      - feature/**
-  pull_request:
-    branches:
-      - main
+      - feature/code-quality-gate
+
 
 jobs:
-  test:
+
+  gate1-code-quality:
+    name: Gate 1 - Black and Pylint
     runs-on: ubuntu-latest
 
     steps:
@@ -27,14 +26,50 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Check Code Formatting
+      - name: Run Black
         run: black --check .
 
       - name: Run Pylint
         run: pylint app.py student.py database.py
 
-      - name: Run Tests
-        run: python -m pytest -v
+  gate2-test-and-coverage:
+    name: Gate 2 - Test Cases and Coverage
+    runs-on: ubuntu-latest
 
-      - name: Run Coverage
-        run: python -m pytest --cov=. --cov-report=term-missing
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests
+        run: |
+          pytest -v
+
+      - name: Validate Coverage
+        run: |
+          pytest --cov=. --cov-report=term-missing --cov-fail-under=90
+
+  gate3-security:
+    name: Gate 3 - Security Gate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Dependabot Configuration
+        run: |
+          test -f .github/dependabot.yml
+
+      - name: Verify CodeQL Workflow
+        run: |
+          test -f .github/workflows/codeql.yml

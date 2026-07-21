@@ -1,8 +1,9 @@
+import os
 from student import Student
 
 
 class StudentDatabase:
-    def __init__(self):
+    def __init__( self ):
         self.students = []
 
     def add_student(self, student_id, name, age):
@@ -13,7 +14,7 @@ class StudentDatabase:
         self.students.append(student)
         return student
 
-    def get_all_students(self):
+    def get_all_students( self ):
         return self.students
 
     def find_student_by_id(self, student_id):
