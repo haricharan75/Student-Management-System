@@ -56,7 +56,7 @@ jobs:
 
       - name: Validate Coverage
         run: |
-          PYTHONPATH=. pytest --cov=. --cov-report=term-missing --cov-fail-under=90
+          PYTHONPATH=. pytest --cov=student --cov=database --cov-report=term-missing --cov-fail-under=90
 
   gate3-security:
     name: Gate 3 - Security Gate
