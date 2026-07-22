@@ -1,7 +1,10 @@
 name: Dependent Quality Gates
 
 on:
-   workflow_dispatch:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/test-coverage-gate
 
 jobs:
 
