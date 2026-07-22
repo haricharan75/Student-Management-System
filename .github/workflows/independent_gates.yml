@@ -104,7 +104,7 @@ jobs:
           from: ${{ secrets.MY_EMAIL_USERNAME }}
 
           body: |
-            Independent Quality Gates Pipeline Completed
+            Independent Quality Gates Pipeline:
 
             Gate 1 (Black + Pylint):
             ${{ needs.gate1-code-quality.result }}
