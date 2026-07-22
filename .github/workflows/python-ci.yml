@@ -120,9 +120,15 @@ jobs:
             Gate 3 (Security):
             ${{ needs.gate3-security.result }}
 
-            Repository: ${{ github.repository }}
-            Branch: ${{ github.ref_name }}
-            Workflow: ${{ github.workflow }}
+            Repository:
+            ${{ github.repository }}
 
-            View Run:
+            Branch:
+            ${{ github.ref_name }}
+
+            Workflow:
+            ${{ github.workflow }}
+
+            For the exact failure reason, view the workflow logs:
+
             https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
