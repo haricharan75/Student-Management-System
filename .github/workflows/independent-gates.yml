@@ -60,7 +60,7 @@ jobs:
           echo "Dependabot Enabled"
           echo "Security Gate Passed"
 
-    notify-failure:
+  notify-failure:
     name: Email Notification
     runs-on: ubuntu-latest
 
@@ -80,11 +80,8 @@ jobs:
           secure: true
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-
           subject: "Quality Gate Execution Summary"
-
           to: ${{ secrets.EMAIL_TO }}
-
           from: GitHub Actions
 
           body: |
@@ -92,8 +89,6 @@ jobs:
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
-
-            Gate Results:
 
             Gate 1 - Code Quality:
             ${{ needs.gate1-code-quality.result }}
