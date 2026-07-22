@@ -82,29 +82,37 @@ jobs:
           pip-audit -r requirements.txt
 
   email-notification:
-    name: Email Notification
-    needs: gate3-security
-    if: failure()
-    runs-on: ubuntu-latest
+  name: Email Notification
+  needs: gate3-security
+  if: failure()
+  runs-on: ubuntu-latest
 
-    steps:
-      - name: Send Email
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "❌ Security Quality Gate Failed"
-          body: |
-            Hello,
+  steps:
+    - name: Send Email
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        secure: true
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: "❌ Security Quality Gate Failed"
+        body: |
+          Hello Hari Charan,
 
-            The Independent Quality Gates workflow has failed.
+          The Independent Quality Gates workflow has completed.
 
-            Gate 3 - Security detected one or more vulnerabilities.
+          Gate 1 - Code Quality: PASSED
+          Gate 2 - Test Coverage: PASSED
+          Gate 3 - Security: FAILED
 
-            Please review the GitHub Actions logs.
+          Reason:
+          A vulnerable dependency was detected by pip-audit.
 
-            Regards,
-            GitHub Actions
+          Please review the GitHub Actions logs.
+
+          Regards,
+          GitHub Actions
+
+        to: haricharanadepu1@gmail.com
+        from: ${{ secrets.EMAIL_USERNAME }}
