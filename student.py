@@ -76,6 +76,6 @@ class Student:
             f"age={self.age}, "
             f"grade={self.get_grade()})"
         )
-    
+
     def bad():
         print("security Gate Test")
