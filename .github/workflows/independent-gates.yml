@@ -1,0 +1,109 @@
+name: Independent Quality Gates
+
+on:
+  push:
+    branches:
+      - feature/student-management
+  pull_request:
+    branches:
+      - feature/student-management
+
+jobs:
+  gate1-code-quality:
+    name: Gate 1 - Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install CI Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install black pylint
+
+      - name: Run Black
+        run: black --check .
+
+      - name: Run Pylint
+        run: pylint student.py database.py app.py
+
+  gate2-test-coverage:
+    name: Gate 2 - Test Coverage
+    needs: gate1-code-quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install Project Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run Tests with Coverage
+        run: |
+          pytest --cov=. --cov-fail-under=80
+
+  gate3-security:
+    name: Gate 3 - Security
+    needs: gate2-test-coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+
+      - name: Security Scan
+        run: |
+          pip-audit -r requirements.txt
+
+  email-notification:
+    name: Email Notification
+    needs: gate3-security
+    if: failure()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ Security Quality Gate Failed"
+          body: |
+            Hello,
+
+            The Independent Quality Gates workflow has failed.
+
+            Gate 3 - Security detected one or more vulnerabilities.
+
+            Please review the GitHub Actions logs.
+
+            Regards,
+            GitHub Actions
