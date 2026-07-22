@@ -55,6 +55,7 @@ jobs:
 
       - name: Run Tests with Coverage
         run: |
+          export PYTHONPATH=$PWD
           pytest --cov=. --cov-fail-under=80
 
   gate3-security:
