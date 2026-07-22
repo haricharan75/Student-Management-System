@@ -3,10 +3,10 @@ name: Independent Quality Gates
 on:
   push:
     branches:
-      - feature/student-management
+      - feature/test-security-gate
   pull_request:
     branches:
-      - feature/student-management
+      - feature/test-security-gate
 
 jobs:
   gate1-code-quality:
@@ -82,37 +82,36 @@ jobs:
           pip-audit -r requirements.txt
 
   email-notification:
-  name: Email Notification
-  needs: gate3-security
-  if: failure()
-  runs-on: ubuntu-latest
+    name: Email Notification
+    needs: gate3-security
+    if: failure()
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Send Email
-      uses: dawidd6/action-send-mail@v3
-      with:
-        server_address: smtp.gmail.com
-        server_port: 465
-        secure: true
-        username: ${{ secrets.EMAIL_USERNAME }}
-        password: ${{ secrets.EMAIL_PASSWORD }}
-        subject: "❌ Security Quality Gate Failed"
-        body: |
-          Hello Hari Charan,
+    steps:
+      - name: Send Email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ Security Quality Gate Failed"
+          body: |
+            Hello Hari Charan,
 
-          The Independent Quality Gates workflow has completed.
+            The Independent Quality Gates workflow has completed.
 
-          Gate 1 - Code Quality: PASSED
-          Gate 2 - Test Coverage: PASSED
-          Gate 3 - Security: FAILED
+            Gate 1 - Code Quality: PASSED
+            Gate 2 - Test Coverage: PASSED
+            Gate 3 - Security: FAILED
 
-          Reason:
-          A vulnerable dependency was detected by pip-audit.
+            Reason:
+            A vulnerable dependency was detected by pip-audit.
 
-          Please review the GitHub Actions logs.
+            Please review the GitHub Actions logs.
 
-          Regards,
-          GitHub Actions
-
-        to: haricharanadepu1@gmail.com
-        from: ${{ secrets.EMAIL_USERNAME }}
+            Regards,
+            GitHub Actions
+          to: haricharanadepu1@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
