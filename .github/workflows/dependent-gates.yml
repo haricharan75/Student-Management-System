@@ -59,7 +59,7 @@ jobs:
           echo "Dependabot Enabled"
           echo "Security Gate Passed"
 
-  notify-failure:
+    notify-failure:
     name: Email Notification
     runs-on: ubuntu-latest
 
@@ -68,7 +68,7 @@ jobs:
       - gate2-test-coverage
       - gate3-security
 
-    if: failure()
+    if: always()
 
     steps:
       - name: Send Email
@@ -79,11 +79,29 @@ jobs:
           secure: true
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "Quality Gate Failure"
+
+          subject: "Quality Gate Execution Summary"
+
           to: ${{ secrets.EMAIL_TO }}
+
           from: GitHub Actions
+
           body: |
-            One or more quality gates failed.
+            Quality Gate Execution Summary
 
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref_name }}
+
+            Gate Results:
+
+            Gate 1 - Code Quality:
+            ${{ needs.gate1-code-quality.result }}
+
+            Gate 2 - Test Coverage:
+            ${{ needs.gate2-test-coverage.result }}
+
+            Gate 3 - Security:
+            ${{ needs.gate3-security.result }}
+
+            Workflow Run:
+            https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
