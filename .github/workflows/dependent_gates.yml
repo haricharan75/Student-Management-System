@@ -103,7 +103,7 @@ jobs:
           username: ${{ secrets.MY_EMAIL_USERNAME }}
           password: ${{ secrets.MY_EMAIL_PASSWORD }}
 
-          subject: Quality Gates Pipeline Result
+          subject: Dependent Quality Gates Result
 
           to: ${{ secrets.MY_EMAIL_TO }}
           from: ${{ secrets.MY_EMAIL_USERNAME }}
