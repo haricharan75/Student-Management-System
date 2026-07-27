@@ -78,6 +78,19 @@ class TestDisplayStudent:
         assert "85" in captured.out
         assert "75" in captured.out
 
+    def test_display_student_with_zero_marks(self, capsys):
+        """Test displaying student with zero marks in a subject"""
+        database = StudentDatabase()
+        student = database.add_student(106, "Zero", 20)
+        student.add_mark("Python", 0)
+
+        display_student(student)
+
+        captured = capsys.readouterr()
+
+        assert "0" in captured.out
+        assert "F" in captured.out
+
 
 class TestMenu:
     """Test the menu function"""
@@ -544,3 +557,386 @@ class TestMainMenuOperations:
         captured = capsys.readouterr()
 
         assert "Error:" in captured.out
+
+    # NEW TESTS: Input Type Errors and Edge Cases
+
+    @patch("builtins.input")
+    def test_invalid_age_input_non_integer_during_update(self, mock_input, capsys):
+        """Test non-integer age input during update operation (choice 6)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "6", "101", "abc", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_marks_input_non_float(self, mock_input, capsys):
+        """Test non-float marks input during add marks operation (choice 8)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "8", "101", "Python", "abc", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_student_id_during_search_by_id(self, mock_input, capsys):
+        """Test non-integer student ID during search by ID (choice 3)"""
+        mock_input.side_effect = ["3", "abc", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_student_id_during_update_name(self, mock_input, capsys):
+        """Test non-integer student ID during update name (choice 5)"""
+        mock_input.side_effect = ["5", "abc", "NewName", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_student_id_during_update_age(self, mock_input, capsys):
+        """Test non-integer student ID during update age (choice 6)"""
+        mock_input.side_effect = ["6", "abc", "25", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_student_id_during_delete(self, mock_input, capsys):
+        """Test non-integer student ID during delete (choice 7)"""
+        mock_input.side_effect = ["7", "abc", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_student_id_during_add_marks(self, mock_input, capsys):
+        """Test non-integer student ID during add marks (choice 8)"""
+        mock_input.side_effect = ["8", "abc", "Python", "95", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_student_id_during_enroll_course(self, mock_input, capsys):
+        """Test non-integer student ID during enroll course (choice 9)"""
+        mock_input.side_effect = ["9", "abc", "Python", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_age_during_update_below_boundary(self, mock_input, capsys):
+        """Test age below boundary (< 5) during update (choice 6)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "6", "101", "4", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "Invalid age" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_age_during_update_above_boundary(self, mock_input, capsys):
+        """Test age above boundary (> 100) during update (choice 6)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "6", "101", "101", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "Invalid age" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_marks_below_boundary_during_add(self, mock_input, capsys):
+        """Test marks below boundary (< 0) during add marks (choice 8)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "8", "101", "Python", "-1", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "between 0 and 100" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_marks_above_boundary_during_add(self, mock_input, capsys):
+        """Test marks above boundary (> 100) during add marks (choice 8)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "8", "101", "Python", "101", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "between 0 and 100" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_name_empty_during_update(self, mock_input, capsys):
+        """Test empty name during update (choice 5)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "5", "101", "", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "Name cannot be empty" in captured.out
+
+    @patch("builtins.input")
+    def test_invalid_name_whitespace_during_update(self, mock_input, capsys):
+        """Test whitespace-only name during update (choice 5)"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "5", "101", "   ", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "Name cannot be empty" in captured.out
+
+    @patch("builtins.input")
+    def test_error_message_contains_validation_detail(self, mock_input, capsys):
+        """Test that error message contains specific validation error details"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "8", "101", "Python", "150", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        # Verify error message contains both "Error:" and the specific validation message
+        assert "Error:" in captured.out
+        assert "100" in captured.out or "between" in captured.out.lower()
+
+    @patch("builtins.input")
+    def test_duplicate_student_error_message_detail(self, mock_input, capsys):
+        """Test that duplicate student error shows appropriate message"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "1", "101", "Charan", "25", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Error:" in captured.out
+        assert "already exists" in captured.out.lower()
+
+    @patch("builtins.input")
+    def test_view_all_students_with_data(self, mock_input, capsys):
+        """Test viewing all students with multiple students"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "1", "102", "Charan", "22",
+            "2", "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Hari" in captured.out
+        assert "Charan" in captured.out
+
+    @patch("builtins.input")
+    def test_search_student_by_name_case_insensitive(self, mock_input, capsys):
+        """Test searching by name is case-insensitive"""
+        mock_input.side_effect = ["1", "101", "Hari", "21", "4", "HARI", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "101" in captured.out
+
+    @patch("builtins.input")
+    def test_marks_boundary_lower_valid(self, mock_input, capsys):
+        """Test adding marks at lower boundary (0)"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "8", "101", "Python", "0",
+            "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Marks added." in captured.out
+
+    @patch("builtins.input")
+    def test_marks_boundary_upper_valid(self, mock_input, capsys):
+        """Test adding marks at upper boundary (100)"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "8", "101", "Python", "100",
+            "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Marks added." in captured.out
+
+    @patch("builtins.input")
+    def test_age_boundary_lower_valid(self, mock_input, capsys):
+        """Test updating age at lower boundary (5)"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "6", "101", "5",
+            "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Age updated." in captured.out
+
+    @patch("builtins.input")
+    def test_age_boundary_upper_valid(self, mock_input, capsys):
+        """Test updating age at upper boundary (100)"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "6", "101", "100",
+            "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Age updated." in captured.out
+
+    @patch("builtins.input")
+    def test_create_student_with_boundary_age(self, mock_input, capsys):
+        """Test creating student with age at boundaries"""
+        mock_input.side_effect = ["1", "201", "Teen", "5", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Student added successfully." in captured.out
+
+    @patch("builtins.input")
+    def test_marks_decimal_values(self, mock_input, capsys):
+        """Test adding marks with decimal values"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "8", "101", "Python", "95.5",
+            "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Marks added." in captured.out
+
+    @patch("builtins.input")
+    def test_count_students_empty_database(self, mock_input, capsys):
+        """Test counting students in empty database"""
+        mock_input.side_effect = ["15", "17"]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Total Students: 0" in captured.out
+
+    @patch("builtins.input")
+    def test_multiple_operations_sequence(self, mock_input, capsys):
+        """Test sequence of add, search, update, and delete operations"""
+        mock_input.side_effect = [
+            "1", "101", "Hari", "21",
+            "3", "101",
+            "5", "101", "UpdatedHari",
+            "3", "101",
+            "7", "101",
+            "17"
+        ]
+
+        from app import main
+
+        main()
+
+        captured = capsys.readouterr()
+
+        assert "Student added successfully." in captured.out
+        assert "Student updated." in captured.out
+        assert "Student deleted." in captured.out
